@@ -1,9 +1,15 @@
 import express from "express"
-import initApp from "./src/initApp.js"
+import cors from "cors"
+import authRouter from "./src/modules/auth/auth.router.js"
+import connectDb from "./DB/connection.js"
 const app = express()
-   initApp();
-app.get('/user', (req, res)=> {
-  res.json({massage:'Hello World'})
+connectDb();
+ app.use(cors())
+ app.use(express.json())
+ app.use('/api/v1/auth/',authRouter)
+   
+app.get('*', (req, res)=> { 
+  res.json({massage:'erorr'})
 })
 
 app.listen(3000,(req,res)=>{ 

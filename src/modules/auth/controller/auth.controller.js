@@ -38,7 +38,7 @@ export const SignUp = async (req, res) => {
     })
   
     /// token تشفير لمعلومات اليوزر 
-     const token = jwt.sign({email,firstName,lastName},"rent")// معرفتش اكمل
+     const token = jwt.sign({email,firstName,lastName},"rent")
      console.log(token);
      
      const message= `
@@ -69,8 +69,8 @@ export const login = async (req, res) => {
 
      export const confirmEmail=(req,res)=>{
 
-      const {token}=req.body;
-      const decoded =jwt.verify(token,password);
+      const {token}=req.params;
+      const decoded =jwt.verify(token,rent);
       res.json(decoded);
 //       const user =  userModel.findOneAndUpdate({email:email},{confirmEmail:true});
 //  return res.status(200).json({message:"success"});

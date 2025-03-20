@@ -13,5 +13,5 @@ app.get('*', (req, res)=> {
 })
 
 app.listen(3000,(req,res)=>{ 
-    console.log('the server running suss')
+    console.log('the server running succsefully')
 }) 

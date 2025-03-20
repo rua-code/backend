@@ -3,6 +3,8 @@
 import userModel from "../../../../DB/model/user.model.js";
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import { sendEmail } from "../../../servies/sendEmail.js";
+import MailMessage from "nodemailer/lib/mailer/mail-message.js";
 export const SignUp = async (req, res) => {
   try {
     console.log('hii')
@@ -34,12 +36,19 @@ export const SignUp = async (req, res) => {
       lastName,
       password:hashpassword
     })
-
+  
     /// token تشفير لمعلومات اليوزر 
-     const token =await jwt.sign({id: userid})// معرفتش اكمل
+     const token = jwt.sign({email,firstName,lastName},"rent")// معرفتش اكمل
+     console.log(token);
+     
+     const message= `
+    <p> you have signed up</p>
+    <a href="http://localhost:3000/auth/confirmEmail/${token}"> confirm your email</a>
 
+     `
     // sendEmail
-
+    await sendEmail(email,"rent",message)
+     
     /// بنرجع للفرونت اند res.json()
     res.json({ message: "success",newUser })
     console.log("signed up");
@@ -55,4 +64,14 @@ export const login = async (req, res) => {
   } catch (error) {
     res.json(error)
   }
+  
 }
+
+     export const confirmEmail=(req,res)=>{
+
+      const {token}=req.body;
+      const decoded =jwt.verify(token,password);
+      res.json(decoded);
+//       const user =  userModel.findOneAndUpdate({email:email},{confirmEmail:true});
+//  return res.status(200).json({message:"success"});
+     }

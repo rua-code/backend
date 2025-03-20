@@ -70,8 +70,8 @@ export const login = async (req, res) => {
      export const confirmEmail=(req,res)=>{
 
       const {token}=req.params;
-      const decoded =jwt.verify(token,rent);
+      const decoded =jwt.verify(token,"rent");
       res.json(decoded);
-//       const user =  userModel.findOneAndUpdate({email:email},{confirmEmail:true});
-//  return res.status(200).json({message:"success"});
+      const user =  userModel.findOneAndUpdate({email:email},{confirmEmail:true});
+         return res.status(200).json({message:"success"});
      }

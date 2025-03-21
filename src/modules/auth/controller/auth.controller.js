@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { sendEmail } from "../../../servies/sendEmail.js";
 import MailMessage from "nodemailer/lib/mailer/mail-message.js";
+import { assign } from "nodemailer/lib/shared/index.js";
 export const SignUp = async (req, res) => {
   try {
     console.log('hii')
@@ -17,7 +18,7 @@ export const SignUp = async (req, res) => {
     const user = await userModel.findOne({email:email});
     /// const user =await userModel.findById()
     if(user){
-      return res.json({message:"الايميل مسجل مسبقا",success:false})
+      return res.json({message:"الايميل مسجل مسبقا",success:false})// ال success whyy
     }
 
     // نفحص اذا الباسورد بساوي الكونفيرم
@@ -50,13 +51,13 @@ export const SignUp = async (req, res) => {
     await sendEmail(email,"rent",message)
      
     /// بنرجع للفرونت اند res.json()
-    res.json({ message: "success",newUser })
-    console.log("signed up");
+    res.json({ message: "success",token})
+    console.log("signed up",token);
   } catch (error) {
     res.json({ message: `error catch ${error}` })
   }
 }
-export const login = async (req, res) => {
+export const signup = async (req, res) => {
   try {
 
     res.json({ message: "success" })
@@ -74,4 +75,23 @@ export const login = async (req, res) => {
       res.json(decoded);
       const user =  userModel.findOneAndUpdate({email:email},{confirmEmail:true});
          return res.status(200).json({message:"success"});
+     }
+
+
+     export const login = async (req,res) =>{
+      return res.json("login");
+
+      const{email,password}=req.body;
+      const user = await userModel.findOne({email});
+      if(user==null){
+        return res.status(404).json({message:"user not Found"});
+
+      }
+const match = bcrypt.compareSync(password,user.password);
+
+        if(!match){
+          return res.status(404).json({message:"user not Found"});
+        }
+        const token = await jwt.sign({email,password},"rent")
+        return res.status(200).json({message:"succses",token});
      }

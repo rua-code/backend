@@ -1,5 +1,5 @@
 // import {userModel} from "../../../../DB/model/user.model.js";
-
+import { nanoid, customAlphabet } from 'nanoid'
 import userModel from "../../../../DB/model/user.model.js";
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
@@ -83,7 +83,6 @@ export const signup = async (req, res) => {
 
 
      export const login = async (req,res) =>{
-      return res.json({message:'login'})
       const{email,password}=req.body;
       const user = await userModel.findOne({email});
       if(user.confirmEmail=false){
@@ -100,4 +99,34 @@ export const signup = async (req, res) => {
         }
         const token = await jwt.sign({email,password},"rent")
         return res.status(200).json({message:"succses",token});
+     }
+
+
+     export const forgetPassword =  async(req,res) =>{
+      const {email}=req.body;
+      const code  = customAlphabet('1234567890abcdef', 5);
+      const user= await userModel.findOneAndUpdate({email},{sendcode:code});
+      const  html='<h2>code is ${code} </h2>';
+      await sendEmail(email,"rent",html);
+
+      return res.status(200).json({message:"succses"});
+     }
+
+     export const resetPassword = async(req,res)=>{
+       const {code,email,password}=req.body;
+       const user = await userModel.findOne({email});
+       if(!user){
+                return res.status(404).json({message:"user not Found"});//تعبر عن حالة النتيجة
+ 
+       }
+       if (user.sendcode != code){
+        return res.status(404).json({message:"not valid code"});//تعبر عن حالة النتيجة
+
+       }
+       const hashpassword= await bcrypt.hash(password);
+       user.password=hashpassword;// why not findone and update.
+       user.sendcode=null;
+       user.save();
+       return res.status(200).json({message:"succses"});
+// ليش بكل فنكشن برجعها
      }

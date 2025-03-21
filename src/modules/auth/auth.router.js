@@ -5,9 +5,10 @@ import { confirmEmail } from "./controller/auth.controller.js";
 
 const router = Router()
 router.post('/signup',SignUp);
-// router.post('/user', (req, res)=> { 
+// router.get('/user', (req, res)=> { 
 //     res.json({massage:'Hello World'})
 //   })
-router.get('/confirmEmail/:email',confirmEmail)
-router.get('/login',login)
+router.get('/confirmEmail/:token',confirmEmail)
+router.post('/login',login
+)
 export default router

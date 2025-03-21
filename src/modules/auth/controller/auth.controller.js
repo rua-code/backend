@@ -18,7 +18,7 @@ export const SignUp = async (req, res) => {
     const user = await userModel.findOne({email:email});
     /// const user =await userModel.findById()
     if(user){
-      return res.json({message:"الايميل مسجل مسبقا",success:false})// ال success whyy
+      return res.json({message:"الايميل مسجل مسبقا",success:false})
     }
 
     // نفحص اذا الباسورد بساوي الكونفيرم
@@ -68,27 +68,32 @@ export const signup = async (req, res) => {
   
 }
 
-     export const confirmEmail=(req,res)=>{
+     export const confirmEmail= async(req,res)=>{
       const {token}=req.params;
       console.log(token);
       const decoded =jwt.verify(token,"rent");
       console.log(decoded);
-      const user =  userModel.findOneAndUpdate({email:decoded.email},{confirmEmail:true});
-         return res.status(200).json({message:"success"});
+      const user = await userModel.findOneAndUpdate({email:decoded.email},{confirmEmail:true});
+      if(!user){
+        return res.json({message:'not find user'})
+      }
+         return res.status(200).json({message:"success",user});
          
      }
 
 
      export const login = async (req,res) =>{
-      return res.json("login");
-
+      return res.json({message:'login'})
       const{email,password}=req.body;
       const user = await userModel.findOne({email});
+      if(user.confirmEmail=false){
+        return res.json({message:"confirm your email"})
+      }
       if(user==null){
-        return res.status(404).json({message:"user not Found"});
+        return res.status(404).json({message:"user not Found"});//تعبر عن حالة النتيجة
 
       }
-const match = bcrypt.compareSync(password,user.password);
+        const match = bcrypt.compareSync(password,user.password);
 
         if(!match){
           return res.status(404).json({message:"user not Found"});

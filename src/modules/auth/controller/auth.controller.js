@@ -30,7 +30,7 @@ export const SignUp = async (req, res) => {
     const hashpassword = bcrypt.hashSync(password, 8);
     console.log(hashpassword)
     //نضيف ع db
-    const newUser=await userModel.create({//مش فاهمتها
+    const newUser=await userModel.create({
       email,
       password,
       firstName,
@@ -39,12 +39,12 @@ export const SignUp = async (req, res) => {
     })
   
     /// token تشفير لمعلومات اليوزر 
-     const token = jwt.sign({email,firstName,lastName},"rent")
+     const token = jwt.sign({email,firstName,lastName},"rent")//inspect 
      console.log(token);
      
      const message= `
     <p> you have signed up</p>
-    <a href="http://localhost:3000/auth/confirmEmail/${token}"> confirm your email</a>
+    <a href="http://localhost:3000/api/v1/auth/confirmEmail/${token}"> confirm your email</a>
 
      `
     // sendEmail
@@ -69,12 +69,13 @@ export const signup = async (req, res) => {
 }
 
      export const confirmEmail=(req,res)=>{
-
       const {token}=req.params;
+      console.log(token);
       const decoded =jwt.verify(token,"rent");
-      res.json(decoded);
-      const user =  userModel.findOneAndUpdate({email:email},{confirmEmail:true});
+      console.log(decoded);
+      const user =  userModel.findOneAndUpdate({email:decoded.email},{confirmEmail:true});
          return res.status(200).json({message:"success"});
+         
      }
 
 

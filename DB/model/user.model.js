@@ -8,7 +8,7 @@ const userSchema=new Schema({
     password: { type: String, required: true },
     confirmEmail: { type: Boolean, default: false },
     sendcode:{type:String,default:null},
-    role:{type: String,enum:["renter","admin","tanant"] ,default:"tanant"},
+    role:{type: String,enum:["renter","admin","tenant"] ,default:"tanant"},
 });
 
 const userModel= model('User',userSchema);

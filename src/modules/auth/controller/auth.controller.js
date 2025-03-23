@@ -85,7 +85,7 @@ export const signup = async (req, res) => {
      export const login = async (req,res) =>{
       const{email,password}=req.body;
       const user = await userModel.findOne({email});
-      if(user.confirmEmail=false){
+      if(user.confirmEmail==false){
         return res.json({message:"confirm your email"})
       }
       if(user==null){
@@ -97,16 +97,21 @@ export const signup = async (req, res) => {
         if(!match){
           return res.status(404).json({message:"user not Found"});
         }
-        const token = await jwt.sign({email,password},"rent")
+        const token = await jwt.sign({email,firstName:user.firstName,lastName:user.lastName,role:user.role},"rent")
         return res.status(200).json({message:"succses",token});
      }
 
 
      export const forgetPassword =  async(req,res) =>{
       const {email}=req.body;
-      const code  = customAlphabet('1234567890abcdef', 5);
+      const code  = customAlphabet('1234567890abcdef', 5)();
+      console.log("code",code);
       const user= await userModel.findOneAndUpdate({email},{sendcode:code});
-      const  html='<h2>code is ${code} </h2>';
+      if(!user){
+        return res.json({message:"email not found"})
+      }
+      
+      const  html=`<h2>code is ${code} </h2>`;
       await sendEmail(email,"rent",html);
 
       return res.status(200).json({message:"succses"});
@@ -123,7 +128,7 @@ export const signup = async (req, res) => {
         return res.status(404).json({message:"not valid code"});//تعبر عن حالة النتيجة
 
        }
-       const hashpassword= await bcrypt.hash(password);
+       const hashpassword= await bcrypt.hash(password,8);
        user.password=hashpassword;// why not findone and update.
        user.sendcode=null;
        user.save();

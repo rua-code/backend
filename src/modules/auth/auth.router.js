@@ -9,7 +9,7 @@ router.get('/user', (req, res)=> {
     res.json({massage:'Hello World'})
   })
 router.get('/confirmEmail/:token',confirmEmail)
-router.post('/login',)
+router.post('/login',login)
 router.post('/forgetPassword',forgetPassword)
-router.post('/resetPassword', resetPasswordPassword)
+router.patch('/resetPassword', resetPassword)
 export default router

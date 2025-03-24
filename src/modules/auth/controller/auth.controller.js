@@ -88,7 +88,7 @@ export const signup = async (req, res) => {
       if(user.confirmEmail==false){
         return res.json({message:"confirm your email"})
       }
-      if(user==null){
+      if(!user){
         return res.status(404).json({message:"user not Found"});//تعبر عن حالة النتيجة
 
       }
@@ -97,7 +97,7 @@ export const signup = async (req, res) => {
         if(!match){
           return res.status(404).json({message:"user not Found"});
         }
-        const token = await jwt.sign({email,firstName:user.firstName,lastName:user.lastName,role:user.role},"rent")
+        const token = await jwt.sign({id:user._id,email,firstName:user.firstName,lastName:user.lastName,role:user.role},"rent")
         return res.status(200).json({message:"succses",token});
      }
 

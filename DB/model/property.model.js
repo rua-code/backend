@@ -11,5 +11,8 @@ const propertySchema= new Schema({
     propertyType: { type: String,enum :['apartment', 'studio', 'house', 'room', 'retrats'] ,required: true },
     area: { type: Number, required: true },
     numberRoom: { type: Number, required: true },
-    title: { type: String, required: true }
+    title: { type: String, required: true },
+    status : {type:String,enum:["pending ", "approved ", "completed "],default: "pending"}
+
 });
+//export 

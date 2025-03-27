@@ -1,3 +1,5 @@
+import propertyModel from "../../../DB/model/property.model.js" 
+
 export const addproprety= async (req,res)=>{
 const fileimage=req.files 
 //req from
@@ -8,7 +10,6 @@ try{
 }
 // if(ownerId !== ownerId.propretymodel){
 //     return res.json({ message: "owner id not valid" });
-
 // }
 if (typeof price !== "Number") {
     return res.status(400).json({ message: "price must be a number" });
@@ -51,6 +52,37 @@ await newProperty.save();
  catch (error) {
     return res.status(500).json({ message: `Server error: ${error.message}` });
 }
+}
+
+export const updateProperty = async (req,res)=>{
+  const {propertyId}  =req.body //مش حكينا انو by defualt بكون في اي دي كيف اجيبه 
+  
+  if (!propertyId) {
+    return res.status(400).json({ message: "Property ID is required" });
+  }
+  const property = await PropertyModel.findById(propertyId);
+  if (!property) {
+    return res.status(404).json({ message: "Property not found" });
+  }
+  const { name, price, location } = req.body;
+    if (name) property.name = name;
+    if (price) property.price = price;
+    if (location) property.location = location;
+    
+    // await newProperty.save();
+}
+
+export const deleteProperty=async (req,res) =>{
+    const {propertyId}=req.body;
+    if(!propertyId){
+        res.status(400).json({message:"No id"})  
+      }
+      const deletedProperty = await propertyModel.findByIdAndDelete(propertyId);
+      if (!deletedProperty) {
+        return res.status(404).json({ message: "Property not found" });
+      }
+ 
+
 }
 
 

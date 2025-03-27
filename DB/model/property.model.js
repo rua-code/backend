@@ -1,10 +1,17 @@
 import {Schema}  from 'mongoose';
 const propertySchema= new Schema({
     location: {
-        type: [Number], 
-        required: true
+        type: {
+            type: String,
+            enum: ['Point'],
+            default: 'Point'
+        },
+        coordinates: {  
+            type: [Number],  // [longitude, latitude]
+            required: true
+        }
     },
-    ownerId: { type:mongoose.Schema.Types.ObjectId ,ref:"user",  required: true },
+    ownerId: { type:mongoose.Schema.Types.ObjectId ,ref:"User",  required: true },
     image: [{ type: String }],
     price: { type: Number, required: true },
     address: { type: String, required: true },
@@ -15,4 +22,5 @@ const propertySchema= new Schema({
     status : {type:String,enum:["pending ", "approved ", "completed "],default: "pending"}
 
 });
-//export 
+const propertyModel= model('Property',propertySchema);
+export default propertyModel;

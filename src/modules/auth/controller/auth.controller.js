@@ -51,21 +51,11 @@ export const SignUp = async (req, res) => {
     await sendEmail(email,"rent",message)
      
     /// بنرجع للفرونت اند res.json()
-    res.json({ message: "success",token})
+    res.json({ message: "success"})
     console.log("signed up",token);
   } catch (error) {
     res.json({ message: `error catch ${error}` })
   }
-}
-export const signup = async (req, res) => {
-  try {
-
-    res.json({ message: "success" })
-    console.log("signed up");
-  } catch (error) {
-    res.json(error)
-  }
-  
 }
 
      export const confirmEmail= async(req,res)=>{

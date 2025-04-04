@@ -11,8 +11,8 @@ export const addBooking = async (req, res) => {
         const newBooking = new bookingModel({
             propertyId,
             tenantId,
-            startDate: start,
-            endDate: end,
+            startDate,
+            endDate,
             paymentMethod,
             status: "pending"
         });

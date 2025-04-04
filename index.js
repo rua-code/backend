@@ -6,6 +6,10 @@ import connectDb from "./DB/connection.js"
 import router from "./src/modules/auth/auth.router.js"
 import { forgetPassword } from "./src/modules/auth/controller/auth.controller.js"
 import propertyRouter from "./src/modules/property/property.router.js"
+import bookingRouter from "./src/modules/booking/booking.router.js";
+
+
+
 const app = express()
 connectDb();
  app.use(cors())
@@ -13,6 +17,7 @@ connectDb();
  app.use('/api/v1/auth',authRouter)
   app.use('/api/v1/user',userRouter)
   app.use('/api/v1/property',propertyRouter)
+  app.use('/api/v1/booking',bookingRouter)
 app.get('*', (req, res)=> { 
   res.json({massage:'erorr page not find'})
 

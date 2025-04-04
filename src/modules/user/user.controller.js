@@ -18,7 +18,7 @@ export const updateUser = async (req, res) => {
 
     const user = await userModel.findById(userId);
     if (!user) return res.status(404).json({ message: "المستخدم غير موجود" });
-
+    if(role) user.role=role;
     if (firstName) user.firstName = firstName;
     if (lastName) user.lastName = lastName;
     if (email) user.email = email;
@@ -28,8 +28,3 @@ export const updateUser = async (req, res) => {
     res.status(200).json({ message: "تم تحديث البيانات بنجاح", user });
 };
 
-
-export const addproprety=async(req,res)=>{
-   //req.id  === owerId 
-
-}

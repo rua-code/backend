@@ -1,5 +1,5 @@
 import { Router } from "express";//
-import { addproprety, deleteProperty, updateProperty } from "./property.controller.js";
+import { addproprety, deleteProperty, findNear, getallProperty, getapprovedtProperty, getProperty, getPropertybyid, updateProperty, updateStatus } from "./property.controller.js";
 import fileUplode from "../../servies/multer.js";
 import { auth } from "../../Middleware/auth.js";
 import validation from "../../Middleware/validation.js";
@@ -8,6 +8,13 @@ const router = Router()
 router.post('/addproperty',  auth(["renter"]),fileUplode(["image/bmp", "image/jpeg", "image/png", "image/gif", "image/webp"]).array('image', 8),validation(addPropertySchema),addproprety)// location 
 router.patch('/updateProperty/:propertyId',auth(["renter"]),fileUplode(["image/bmp", "image/jpeg", "image/png", "image/gif", "image/webp"]).array('image', 8),validation(updatePropertySchema),updateProperty)
 router.delete('/deleteProperty/:propertyId',auth(["renter","admin"]),deleteProperty)
+router.get('/findNear',findNear)
+router.patch('/updatestatus/:propertyId',auth(["admin"]), updateStatus)
+router.get("/getProperty/:propertyId",getProperty)
+router.get("/getallProperty",auth(["admin"]),getallProperty)
+router.get("/getapprovedproperty",getapprovedtProperty)
+router.get("/getpropertybyid/:ownerId",auth(["renter"]),getPropertybyid)
 export default router
-
-
+//بدي ارجع من قاعدى البياتاات get
+//post تخزين بقاعدة البيانات
+// patch تعديل على البيانات

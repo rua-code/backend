@@ -21,8 +21,9 @@ const propertySchema= new Schema({
     area: { type: Number, required: true },
     numberRoom: { type: Number, required: true },
     title: { type: String, required: true },
-    status : {type:String,enum:["pending", "approved", "completed"],default: "pending"}
+    status : {type:String,enum:["pending", "approved"],default: "pending"}
 
 });
+propertySchema.index({location:'2dsphere'});
 const propertyModel= model('Property',propertySchema);
 export default propertyModel;

@@ -10,7 +10,7 @@ export const SignUp = async (req, res) => {
   try {
     console.log('hii')
     //نستقبل الداتا الي جاي من افرونت 
-    const { email, password, firstName, lastName, confirmpassword } = req.body; // بعرف لازم ناخدها من البودي بس ليه حيطنا شو ياخد
+    const { email, password, firstName, lastName, confirmPassword } = req.body; // بعرف لازم ناخدها من البودي بس ليه حيطنا شو ياخد
     console.log(email)
 
     // نتاكد اذا مسجل بنفس الايميل مسبقا
@@ -22,7 +22,7 @@ export const SignUp = async (req, res) => {
     }
 
     // نفحص اذا الباسورد بساوي الكونفيرم
-    if(password != confirmpassword){
+    if(password != confirmPassword){
       return res.json({message:"الباسورد غلط",success:false})
     }
 

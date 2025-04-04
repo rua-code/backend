@@ -7,8 +7,8 @@ import validation from "../../Middleware/validation.js";
 
 const router = Router()
 router.post('/signup',validation(signUpValidation),SignUp);
-router.get('/confirmEmail/:token',validation(loginValidation),confirmEmail)
-router.post('/login',login)
+router.get('/confirmEmail/:token',confirmEmail)
+router.post('/login',validation(loginValidation),login)
 router.post('/forgetPassword',validation(forgetPasswordValidation),forgetPassword)
 router.patch('/resetPassword', validation(resetPasswordValidation),resetPassword)
 export default router

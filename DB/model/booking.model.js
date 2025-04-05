@@ -12,3 +12,4 @@ const bookingSchema = new Schema({
 });
 const bookingModel= model('Booking',bookingSchema);
 export default bookingModel;
+

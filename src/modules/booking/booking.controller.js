@@ -103,7 +103,74 @@ export const updateBooking = async (req, res) => {
             bookingID.paymentMethod = paymentMethod
         }
         await bookingID.save()
+        return res.status(400).json({ message: "success" });
+        
     } catch (error) {
         return res.status(500).json({ message: `Server error: ${error.message}` });
     }
 }
+// المفروض كمان نعمل لطلب الاستئجار
+
+//تعديل حالة حجز من قبل صاحب العقار س status
+
+export const updateBookingStatus = async (req, res) => {
+    try {
+        const { bookingId } = req.params;
+        const ownerId = req.id;
+        const { status } = req.body;
+
+        // تحقق من وجود الحجز
+        const booking = await bookingModel.findById(bookingId);
+        if (!booking) {
+            return res.status(404).json({ message: "Booking not found" });
+        }
+
+        // جلب العقار المرتبط بالحجز
+        const property = await propertyModel.findById(booking.propertyId);
+        if (!property) {
+            return res.status(404).json({ message: "Property not found" });
+        }
+
+        // التحقق إن المستخدم هو صاحب العقار
+        if (property.ownerId.toString() !== ownerId) {
+            return res.status(403).json({ message: "You are not the owner of this property" });
+        }
+
+        // تحقق من أن الحالة المرسلة صالحة
+        const validStatuses = ["pending", "approved", "completed"];
+        if (!validStatuses.includes(status)) {
+            return res.status(400).json({ message: "Invalid booking status" });
+        }
+
+        // تعديل الحالة
+        booking.status = status;
+        await booking.save();
+
+        return res.status(200).json({ message: "Booking status updated successfully", booking });
+    } catch (error) {
+        return res.status(500).json({ message: `Server error: ${error.message}` });
+    }
+};
+
+
+export const getAllBookingsForOwner = async (req, res) => {
+    try {
+        const ownerId = req.id;
+
+        // جيب كل العقارات يلي إنت مالكها
+        const properties = await propertyModel.find({ ownerId });
+
+        // طلع بس ال IDs تبع العقارات
+        const propertyIds = properties.map(p => p._id);
+
+        // جيب الحجوزات اللي لها علاقة بالعقارات تبعتك
+        const bookings = await bookingModel.find({ propertyId: { $in: propertyIds } });
+
+        res.json({ bookings });
+
+    } catch (error) {
+        res.status(500).json({ message: "Error", error: error.message });
+    }
+};
+
+/// الحجوزات الخاصة لصاحب عقار معين 

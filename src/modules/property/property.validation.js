@@ -53,3 +53,5 @@ export const updatePropertySchema = Joi.object({
         "number.positive": "Price must be a positive number"
     })
 });
+
+// في ريكوست لل uploud  والادمن بغير حالة الطلب 

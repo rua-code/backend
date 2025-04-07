@@ -173,6 +173,24 @@ export const getAllBookingsForOwner = async (req, res) => {
 
  // ومعلومات العقار معلومات حجز معين booking id=params ,tenent from token ,.populate
 
+export const getTenantBookingDetails = async (req, res) => {
+  try {
+    const {bookingId} = req.params;
+    const tenantId = req.id; // جاي من التوكن بعد التحقق
+
+    const booking = await bookingModel.findById({ _id: bookingId, tenantId: tenantId}).populate("propertyId"); // جلب تفاصيل العقار
+
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found or not yours" });
+    }
+
+    return res.status(200).json({ booking });
+  } catch (error) {
+    return res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+
 //فنكشن يرجع لمستأجر معين البوكينج
 
 export const tenantBookings =async (req,res)=> {

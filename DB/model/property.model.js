@@ -21,7 +21,12 @@ const propertySchema= new Schema({
     area: { type: Number, required: true },
     numberRoom: { type: Number, required: true },
     title: { type: String, required: true },
-    status : {type:String,enum:["pending", "approved"],default: "pending"}
+    status : {type:String,enum:["pending", "approved","canceld"],default: "pending"},
+    note :{
+        type:String,
+        default :"سيتم مراجعة الطلب "
+
+    }
 
 });
 propertySchema.index({location:'2dsphere'});

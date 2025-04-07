@@ -111,10 +111,10 @@ export const findNear = async (req, res) => {
     }
 }
 
-export const updateStatus =async(req, res) =>{
-const {status}= req.body;
+export const updateStatus =async(req, res) =>{//لاضافة عقار طلب
+const {status,note}= req.body;
 const {propertyId}= req.params;
-const property= await propertyModel.findByIdAndUpdate(propertyId, {status:status});
+const property= await propertyModel.findByIdAndUpdate(propertyId, {status:status,note:note});
 if(!property){
     return res.status(400).json({message:"invalid property id"})
 }

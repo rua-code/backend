@@ -5,10 +5,13 @@ const bookingSchema = new Schema({
     tenantId: { type: mongoose.Schema.Types.ObjectId,ref:"User", required: true },
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
-    price:{type:Number,required:true},
     paymentMethod: { type: String,enum:["palpay","credit card"],default:"palpay" },
-    status : {type:String,enum:["pending", "approved", "completed"],default: "pending"}
+    status : {type:String,enum:["pending", "approved", "completed","canceld"],default: "pending"},
+    note :{
+        type:String,
+        default :"سيتم مراجعة الطلب "
 
+    }
 });
 const bookingModel= model('Booking',bookingSchema);
 export default bookingModel;

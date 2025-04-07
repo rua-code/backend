@@ -8,8 +8,8 @@ export const addBooking = async (req, res) => {
         const tenantId = req.id
         // contenanIDsole.log(tenantId)
         const { propertyId } = req.params
-        const { startDate, endDate, paymentMethod, price } = req.body;
-        if (!startDate || !endDate || !paymentMethod || !price) {
+        const { startDate, endDate, paymentMethod } = req.body;
+        if (!startDate || !endDate || !paymentMethod ) {
             return res.status(400).json({ message: "Please provide all required fields" });
         }
         const property = await propertyModel.findById(propertyId)
@@ -38,7 +38,6 @@ export const addBooking = async (req, res) => {
             tenantId,
             startDate: start,
             paymentMethod,
-            price,
             endDate: end
         })
 
@@ -63,7 +62,7 @@ export const updateBooking = async (req, res) => {
     try {
         const { bookingId } = req.params
         const tenantId=req.id
-        const { startDate, endDate, paymentMethod, price } = req.body;
+        const { startDate, endDate, paymentMethod} = req.body;
         const bookingID = await bookingModel.findById(bookingId);
         if (!bookingID) {
             return res.status(400).json({ message: "booking id not found" });
@@ -96,9 +95,6 @@ export const updateBooking = async (req, res) => {
         if (endDate) {
             bookingID.endDate = end
         }
-        if (price) {
-            bookingID.price = price
-        }
         if (paymentMethod) {
             bookingID.paymentMethod = paymentMethod
         }
@@ -117,7 +113,7 @@ export const updateBookingStatus = async (req, res) => {
     try {
         const { bookingId } = req.params;
         const ownerId = req.id;
-        const { status } = req.body;
+        const { status ,note} = req.body;
 
         // تحقق من وجود الحجز
         const booking = await bookingModel.findById(bookingId);
@@ -144,6 +140,7 @@ export const updateBookingStatus = async (req, res) => {
 
         // تعديل الحالة
         booking.status = status;
+        booking.note=note;
         await booking.save();
 
         return res.status(200).json({ message: "Booking status updated successfully", booking });
@@ -173,4 +170,24 @@ export const getAllBookingsForOwner = async (req, res) => {
     }
 };
 
-/// الحجوزات الخاصة لصاحب عقار معين 
+
+ // ومعلومات العقار معلومات حجز معين booking id=params ,tenent from token ,.populate
+
+//فنكشن يرجع لمستأجر معين البوكينج
+
+export const tenantBookings =async (req,res)=> {
+    try{
+        const tenantId = req.id
+        const bookings=await bookingModel.find({tenantId});
+        return res.status(200).json({
+            message: "Tenant bookings fetched successfully",
+            bookings
+        });
+
+
+    }
+    catch(error){
+        return res.status(500).json({ message: "Server error", error: error.message });
+
+    }
+}

@@ -26,7 +26,15 @@ const propertySchema= new Schema({
         type:String,
         default :"سيتم مراجعة الطلب "
 
-    }
+    },
+    ratingCounts: {
+        1: { type: Number, default: 0 },
+        2: { type: Number, default: 0 },
+        3: { type: Number, default: 0 },
+        4: { type: Number, default: 0 },
+        5: { type: Number, default: 0 }
+      }
+      
 
 });
 propertySchema.index({location:'2dsphere'});

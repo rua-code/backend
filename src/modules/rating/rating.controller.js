@@ -1,6 +1,6 @@
 import ratingModel from "../../../DB/model/rating.model.js";
 import propertyModel from "../../../DB/model/property.model.js";
-
+import bookingModel from "../../../DB/model/booking.model.js";
 
 export const addRating = async(req,res)=>{
     try{
@@ -12,7 +12,18 @@ export const addRating = async(req,res)=>{
         if(!rating || rating<0 || rating >5 ){
             return res.status(400).json({message: " rating must be between 1 - 5"})
         }
+        const booking = await bookingModel.findOne({
+            tenantId,
+            propertyId,
+            status: { $in: ["approved", "completed"] }
+          });
+          if (!booking) {
+            return res.status(400).json({
+              message: "You can only rate properties you've booked and had approved/completed"
+            });
+          }
         //testing
+
            const existingRating = await  ratingModel.findOne({propertyId,tenantId});// find by id i should put id but find one is searching by multibe counditions
            if (existingRating){
             return res.status(400).json({ message: "You have already rated this property" });
@@ -26,9 +37,7 @@ export const addRating = async(req,res)=>{
                                   }
                if (!property.ratingCounts) property.ratingCounts = {};//
                property.ratingCounts[rating] = (property.ratingCounts[rating] || 0) + 1;
-               property.totalRatings = (property.totalRatings || 0) + 1;
-               property.sumRatings = (property.sumRatings || 0) + rating;
-               property.averageRating = property.sumRatings / property.totalRatings;
+       
                    
                await property.save();
 
@@ -39,3 +48,80 @@ export const addRating = async(req,res)=>{
         return res.status(500).json({ message: "Server error", error: error.message });
       }
 }
+
+
+export const updateRating = async (req, res) => {
+  try {
+    const tenantId = req.id; // جاي من التوكن
+    const { propertyId } = req.params;
+    const { rating } = req.body;
+
+    // تحقق من صحة التقييم
+    if (!rating || rating < 1 || rating > 5) {
+      return res.status(400).json({ message: "Rating must be between 1 - 5" });
+    }
+
+    // تحقق هل المستأجر فعلاً حجز هذا العقار وحالة الحجز مقبولة أو مكتملة
+    const validBooking = await bookingModel.findOne({
+      propertyId,
+      tenantId,
+      status: { $in: ["approved", "complete"] }
+    });
+
+    if (!validBooking) {
+      return res.status(403).json({ message: "You can only rate properties you have booked and completed/approved" });
+    }
+
+    // تحقق من وجود تقييم سابق
+    const existingRating = await ratingModel.findOne({ propertyId, tenantId });
+    if (!existingRating) {
+      return res.status(404).json({ message: "You have not rated this property yet" });
+    }
+
+    const oldRating = existingRating.rating;
+    existingRating.rating = rating;
+    await existingRating.save();
+
+    const property = await propertyModel.findById(propertyId);
+    if (!property) {
+      return res.status(404).json({ message: "Property not found" });
+    }
+
+    if (!property.ratingCounts) property.ratingCounts = {};
+
+    // خصم واحد من التقييم القديم
+    if (property.ratingCounts[oldRating]) {
+      property.ratingCounts[oldRating] -= 1;
+      if (property.ratingCounts[oldRating] < 0) {
+        property.ratingCounts[oldRating] = 0;
+      }
+    }
+
+    // زيادة واحد للتقييم الجديد
+    if (!property.ratingCounts[rating]) {
+      property.ratingCounts[rating] = 1;
+    } else {
+      property.ratingCounts[rating] += 1;
+    }
+
+    await property.save();
+
+    return res.status(200).json({ message: "Rating updated successfully" });
+
+  } catch (error) {
+    return res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+export const getTenantRatings = async (req, res) => {
+    try {
+      const tenantId = req.id; // من التوكن
+  
+      const ratings = await ratingModel.find({ tenantId }).populate("propertyId");
+  
+      return res.status(200).json({ ratings });
+  
+    } catch (error) {
+      return res.status(500).json({ message: "Server error", error: error.message });
+    }
+  };

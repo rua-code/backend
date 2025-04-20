@@ -3,8 +3,7 @@ import mongoose, { Schema } from "mongoose";
 const chatSchema = new Schema({
   participants: [
     {
-      senderId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-      receiverId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+      ref: "User", type :Schema.Types.ObjectId,required:true
     }
   ],
   propertyId: { type: Schema.Types.ObjectId, ref: "Property", required: true },

@@ -57,3 +57,20 @@ export const sendMessage = async (req, res) => {
     return res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+export const getUserChat = async (req, res) => {
+  try {
+    const senderId = req.id; // جاي من التوكن
+
+    // جيب كل المحادثات اللي المستخدم طرف فيها
+    const chats = await chatModel.find({
+      participants: { $all: [senderId] }
+    });
+
+    // رجّعهم كـ JSON
+    return res.status(200).json({ chats });
+
+  } catch (error) {
+    return res.status(500).json({ message: "Server error", error: error.message });
+  }
+};

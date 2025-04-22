@@ -6,22 +6,22 @@ export const sendMessage = async (req, res) => {
     const senderId = req.id;
     const { receiverId } = req.params;
     const { message, propertyId } = req.body;
-    
+
     if (!message || !receiverId || !propertyId) {
       return res.status(400).json({ message: "Missing data" });
     }
-  
+
     // 1. Check if chat exists
     // const propertyID =propertyId.toString();
     // const senderID= senderId.toString();
     // const receiverID= receiverId.toString();
     // console.log(propertyID)
-  const chat = await chatModel.findOne({
+    const chat = await chatModel.findOne({
       participants: { $all: [senderId, receiverId] },
       propertyId,
     });
-    
-  
+
+
     // 2. If not exists, create it
     if (!chat) {
       chat = await chatModel.create({
@@ -31,7 +31,7 @@ export const sendMessage = async (req, res) => {
       });
     } else {
       // 3. Update lastMessage
-      chat.lastMessage = message; 
+      chat.lastMessage = message;
       await chat.save();
     }
 
@@ -48,7 +48,12 @@ export const sendMessage = async (req, res) => {
     await messageRef.set(messageData);
 
     // 5. Update lastMessage in Firebase too
-    await db.ref(`chat/${chatId}/lastMessage`).set(message);//db ref ,, message ref ??
+    await db.ref(`chat/${chatId}/lastMessage`).set({
+      message,
+      senderId,
+      chatId,
+      receiverId
+    });//db ref ,, message ref ??
 
     return res.status(200).json({ message: "Message sent", chatId });
 
@@ -67,8 +72,21 @@ export const getUserChat = async (req, res) => {
       participants: { $all: [senderId] }
     });
 
+    const firebaseChat = [];
+    let lastMessage;
+
+    for (const chat of chats) {// chat id from mongodb 
+      const chatID = chat._id
+      const pathofReading = db.ref(`chat/${chatID}/lastMessage`)//من وين اقرء 
+      const read = await pathofReading.once("value")//reading from fire base
+      lastMessage = read.val();
+      firebaseChat.push({ lastMessage });
+
+    }
+
+
     // رجّعهم كـ JSON
-    return res.status(200).json({ chats });
+    return res.status(200).json({ lastMessage });
 
   } catch (error) {
     return res.status(500).json({ message: "Server error", error: error.message });

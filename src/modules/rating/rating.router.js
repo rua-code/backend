@@ -4,7 +4,7 @@ import { auth } from "../../Middleware/auth.js";
 const router = Router()
  router.post('/addRating/:propertyId',auth(["tenant","renter","admin"]),addRating)
  router.patch('/updateRating/:propertyId',auth(["tenant","renter","admin"]), updateRating )
-router.get('getTenantRatings',auth(["tenant","renter","admin"]),getTenantRatings)
+router.get('/getTenantRatings',auth(["tenant","renter","admin"]),getTenantRatings)
 
 
 

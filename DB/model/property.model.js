@@ -17,7 +17,7 @@ const propertySchema= new Schema({
     image: [{ type: String }],
     price: { type: Number, required: true },
     address: { type: String, required: true },
-    propertyType: { type: String,enum :['apartment', 'studio', 'house', 'room', 'retrats'] ,required: true },
+    propertyType: { type: String,enum :['apartment', 'studio', 'student dorm', 'vaills'] ,required: true },
     area: { type: Number, required: true },
     numberRoom: { type: Number, required: true },
     title: { type: String, required: true },

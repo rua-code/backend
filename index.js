@@ -9,6 +9,7 @@ import propertyRouter from "./src/modules/property/property.router.js"
 import bookingRouter from "./src/modules/booking/booking.router.js";
 import ratingRouter from "./src/modules/rating/rating.router.js"
 import messageRouter from "./src/modules/message/message.router.js"
+import expiredBookingss from "./src/servies/cron.js"
 
 
 const app = express()

@@ -11,5 +11,9 @@ const userSchema=new Schema({
     role:{type: String,enum:["renter","admin","tenant"] ,default:"tenant"},
 });
 
+//user=> collection name in mongo 
+//model =>lib from mongooes helps me to create collection 
+//userschema=> defins what fildes will be in mongo 
+//schem=>strctuer ,model(crud)
 const userModel= model('User',userSchema);
 export default userModel;

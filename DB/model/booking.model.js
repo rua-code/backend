@@ -5,7 +5,7 @@ const bookingSchema = new Schema({
     tenantId: { type: mongoose.Schema.Types.ObjectId,ref:"User", required: true },
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
-    paymentMethod: { type: String,enum:["palpay","credit card"],default:"palpay" },
+    paymentMethod: { type: String,enum:["cash","credit card"],default:"palpay" },
     status : {type:String,enum:["pending", "approved", "completed","canceld"],default: "pending"},
     note :{
         type:String,

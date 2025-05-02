@@ -14,7 +14,7 @@ const propertySchema= new Schema({
     },
     publicId:   [{ type: String }],
     ownerId: { type:mongoose.Schema.Types.ObjectId ,ref:"User",  required: true },
-    image: [{ type: String }],
+    image: [{ type: String}],
     price: { type: Number, required: true },
     address: { type: String, required: true },
     propertyType: { type: String,enum :['apartment', 'studio', 'student dorm', 'vaills'] ,required: true },

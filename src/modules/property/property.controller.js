@@ -7,7 +7,7 @@ export const addproprety = async (req, res) => {
     //req from
     try {
         const { lng, lat, price, address, propertyType, area, numberRoom, title } = req.body;
-        if (!fileimage) {
+        if (!fileimage || fileimage != null) {
             return res.status(400).json({ message: "image is reqeird" });
         }
 
@@ -146,7 +146,7 @@ export const getapprovedtProperty =async(req,res)=>{
 if(!property){
     return res.status(400).json({message:"invalid property id"})
 }
-return res.json({message:"succsess",property})
+return res.json({message:"success",property})
 }
 
 export const getPropertybyid =async(req,res)=>{

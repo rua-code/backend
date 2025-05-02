@@ -28,3 +28,20 @@ export const updateUser = async (req, res) => {
     res.status(200).json({ message: "تم تحديث البيانات بنجاح", user });
 };
 
+
+export const getUserById = async (req, res) => {
+  try {
+    // const token=req.id;
+    const { userId } = req.params;
+
+    const user = await userModel.findById(userId).select("-password -confirmEmail -sendcode"); // -password يعني لا ترجع الباسورد
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.status(200).json({ user });
+  } catch (error) {
+    return res.status(500).json({ message: "Server error", error: error.message });
+  }
+};

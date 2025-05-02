@@ -29,11 +29,11 @@ export const sendMessage = async (req, res) => {
         propertyId,
         lastMessage: message,
       });
-    } else {
+    } 
       // 3. Update lastMessage
       chat.lastMessage = message;
       await chat.save();
-    }
+    
 
     const chatId = chat._id.toString(); //toString() يحوّله من ObjectId إلى نص (String) because fire base dose not support objectid
 
@@ -86,7 +86,7 @@ export const getUserChat = async (req, res) => {
 
 
     // رجّعهم كـ JSON
-    return res.status(200).json({ lastMessage });
+    return res.status(200).json({ firebaseChat });
 
   } catch (error) {
     return res.status(500).json({ message: "Server error", error: error.message });

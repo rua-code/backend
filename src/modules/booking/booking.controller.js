@@ -27,7 +27,7 @@ export const addBooking = async (req, res) => {
         if (start < new Date()) {
             return res.status(400).json({ message: "start date must be after today date" });
         }
-        const booking = await bookingModel.find({ propertyId, status: { $in: ["pending", "approved"] }, startDate: { $lte: end }, endDate: { $gte: start } })
+        const booking = await bookingModel.find({ propertyId, status: { $in: [ "approved"] }, startDate: { $lte: end }, endDate: { $gte: start } })
         if (booking.length > 0) {
             return res.status(400).json({ message: "its booked" });
         }

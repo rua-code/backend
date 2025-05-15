@@ -39,6 +39,10 @@ export const addPropertySchema = Joi.object({
         "any.required": "Title is required",
         "string.min": "Title must be at least 3 characters",
         "string.max": "Title must be less than 50 characters"
+    }),
+    note:Joi.string().min(3).max(100).optional().messages({
+        "string.min": "Title must be at least 3 characters",
+        "string.max": "Title must be less than 50 characters"
     })
 });
 

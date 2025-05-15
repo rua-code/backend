@@ -88,7 +88,7 @@ export const SignUp = async (req, res) => {
           return res.status(404).json({message:"user not Found"});
         }
         const token = await jwt.sign({id:user._id,email,firstName:user.firstName,lastName:user.lastName,role:user.role},"rent")
-        return res.status(200).json({message:"succses",token});
+        return res.status(200).json({message:"success",token});
      }
 
 
@@ -104,7 +104,7 @@ export const SignUp = async (req, res) => {
       const  html=`<h2>code is ${code} </h2>`;
       await sendEmail(email,"rent",html);
 
-      return res.status(200).json({message:"succses"});
+      return res.status(200).json({message:"success"});
      }
 
      export const resetPassword = async(req,res)=>{
@@ -122,6 +122,21 @@ export const SignUp = async (req, res) => {
        user.password=hashpassword;// why not findone and update.
        user.sendcode=null;
        user.save();
-       return res.status(200).json({message:"succses"});
+       return res.status(200).json({message:"success"});
 // ليش بكل فنكشن برجعها
      }
+export const checkCode=async(req,res)=>{
+
+  const {code,email}=req.body;
+   const user = await userModel.findOne({email});
+       if(!user){
+                return res.status(404).json({message:"user not Found"});//تعبر عن حالة النتيجة
+ 
+       }
+   if (user.sendcode != code){
+        return res.status(404).json({message:"not valid code"});//تعبر عن حالة النتيجة
+
+       }
+       return res.status(200).json({message:"success"});
+
+};

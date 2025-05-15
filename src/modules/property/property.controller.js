@@ -6,8 +6,8 @@ export const addproprety = async (req, res) => {
     const fileimage = req.files
     //req from
     try {
-        const { lng, lat, price, address, propertyType, area, numberRoom, title } = req.body;
-        if (!fileimage || fileimage != null) {
+        const { lng, lat, price, address, propertyType, area, numberRoom, title ,note} = req.body;
+        if (!fileimage || fileimage == null) {
             return res.status(400).json({ message: "image is reqeird" });
         }
 
@@ -33,7 +33,8 @@ export const addproprety = async (req, res) => {
             image: images,
             publicId: publicId,
             ownerId: req.id,
-            title
+            title,
+            note
         })
 
         return res.json({ message: "property added", property });

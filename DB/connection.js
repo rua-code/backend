@@ -10,3 +10,6 @@ import  mongoose from 'mongoose';
   }
 
   export default connectDb
+  //mongodb://127.0.0.1:27017/rent'
+  //mongodb+srv://rua:rent@cluster0.xwiyw.mongodb.net/rent
+  

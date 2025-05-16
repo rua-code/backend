@@ -1,5 +1,6 @@
 import { db } from "../../servies/firebase.js";
 import chatModel from "../../../DB/model/chat.model.js";
+import userModel from "../../../DB/model/user.model.js";
 
 export const sendMessage = async (req, res) => {
   try {
@@ -80,7 +81,9 @@ export const getUserChat = async (req, res) => {
       const pathofReading = db.ref(`chat/${chatID}/lastMessage`)//من وين اقرء 
       const read = await pathofReading.once("value")//reading from fire base
       lastMessage = read.val();
-      firebaseChat.push({ lastMessage });
+      const sender=await userModel.findById(lastMessage.senderId).select("-password -confirmEmail -sendcode");
+      const receiver=await userModel.findById(lastMessage.receiverId).select("-password -confirmEmail -sendcode");
+      firebaseChat.push({ lastMessage,propertyId:chat.propertyId,sender:sender,receiver:receiver});
 
     }
 

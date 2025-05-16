@@ -119,7 +119,7 @@ const property= await propertyModel.findByIdAndUpdate(propertyId, {status:status
 if(!property){
     return res.status(400).json({message:"invalid property id"})
 }
-return res.status(200).json({message:"succsess"});
+return res.status(200).json({message:"success"});
 }
 
 export const getProperty =async(req,res)=>{
@@ -128,7 +128,7 @@ export const getProperty =async(req,res)=>{
 if(!property){
     return res.status(400).json({message:"invalid property id"})
 }
-return res.json({message:"succsess",property})
+return res.json({message:"success",property})
 }
 
 
@@ -138,7 +138,7 @@ export const getallProperty =async(req,res)=>{
 if(!property){
     return res.status(400).json({message:"no peroperty"})
 }
-return res.json({message:"succsess",property})
+return res.json({message:"success",property})
 }
 
 
@@ -156,7 +156,7 @@ export const getPropertybyid =async(req,res)=>{
 if(!property){
     return res.status(400).json({message:"invalid owner id"})
 }
-return res.json({message:"succsess",property})
+return res.json({message:"success",property})
 }
 
 

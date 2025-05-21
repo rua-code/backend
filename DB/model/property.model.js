@@ -35,6 +35,7 @@ const propertySchema= new Schema({
        "5": { type: Number, default: 0 }
       }
       
+      
 
 });
 propertySchema.index({location:'2dsphere'});

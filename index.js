@@ -3,8 +3,6 @@ import cors from "cors"
 import authRouter from "./src/modules/auth/auth.router.js"
 import userRouter from "./src/modules/user/user.router.js"
 import connectDb from "./DB/connection.js"
-import router from "./src/modules/auth/auth.router.js"
-import { forgetPassword } from "./src/modules/auth/controller/auth.controller.js"
 import propertyRouter from "./src/modules/property/property.router.js"
 import bookingRouter from "./src/modules/booking/booking.router.js";
 import ratingRouter from "./src/modules/rating/rating.router.js"

@@ -1,31 +1,23 @@
 import jwt from 'jsonwebtoken';
 import userModel from '../../DB/model/user.model.js';
 
-export const auth = (accessRoles= [])=> { //ما فهمت الاكسس رولز 
+export const auth = (accessRoles= [])=> { 
     return async(req,res,next)=>{
-        const {token}= req.headers
-
+        const {token}= req.headers 
         if(!token){
-            return res.status(403).json({message:"access denied "});//why not res.json
+            return res.status(403).json({message:"access denied "});
         }
-         const decoded= jwt.verify(token,"rent")
+         const decoded= jwt.verify(token,"rent")//rent is the secret key 
          console.log(decoded);
          const user=await userModel.findOne({email:decoded.email});
          if(!decoded){
-            return res.status(403).json({message:"access denied "})
+            return res.status(403).json({message:"auth not found"}) 
         }
-        // if(decoded.role=='tenant'){
-        //     return res.status(401).sjson({message:"access denied "}) 
-        // }
         if(!accessRoles.includes(user.role)){
-            return res.status(403).json({message:"auth not found"})
+            return res.status(403).json({message:"access denied"})
 
         }
-        // endpoint ??
-        // req method ==> get , post , patch,delete
-        // req url 
-        // admin , renter 
-        req.id=decoded.id;//وين رح استعمل ال id وشو هو ال decoded id
+        req.id=decoded.id;
         next();
     }
 }

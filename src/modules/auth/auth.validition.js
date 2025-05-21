@@ -29,4 +29,7 @@ export const loginValidation  = Joi.object({
         export const forgetPasswordValidation = Joi.object({
                 email: Joi.string().email().required(),
             });
-        
+        export const newPasswordValidation = Joi.object({
+                password: Joi.string().min(6).required(),
+                confirmPassword: Joi.string().valid(Joi.ref('password')).required()
+            });

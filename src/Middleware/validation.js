@@ -2,7 +2,7 @@
 const validation = (schema) => {
     return (req, res, next) => {
         const inputData = { ...req.body, ...req.params, ...req.query};
-        const validateResult = schema.validate(inputData, { abortEarly: false });
+        const validateResult = schema.validate(inputData, { abortEarly: false }); // abortEarly: dont stop at first error
 
         if (validateResult?.error) {
             return res.status(400).json({

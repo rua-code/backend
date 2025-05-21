@@ -1,6 +1,7 @@
 import { db } from "../../servies/firebase.js";
 import chatModel from "../../../DB/model/chat.model.js";
 import userModel from "../../../DB/model/user.model.js";
+import propertyModel from "../../../DB/model/property.model.js";
 
 export const sendMessage = async (req, res) => {
   try {
@@ -17,7 +18,7 @@ export const sendMessage = async (req, res) => {
     // const senderID= senderId.toString();
     // const receiverID= receiverId.toString();
     // console.log(propertyID)
-    const chat = await chatModel.findOne({
+    let chat = await chatModel.findOne({
       participants: { $all: [senderId, receiverId] },
       propertyId,
     });
@@ -83,7 +84,8 @@ export const getUserChat = async (req, res) => {
       lastMessage = read.val();
       const sender=await userModel.findById(lastMessage.senderId).select("-password -confirmEmail -sendcode");
       const receiver=await userModel.findById(lastMessage.receiverId).select("-password -confirmEmail -sendcode");
-      firebaseChat.push({ lastMessage,propertyId:chat.propertyId,sender:sender,receiver:receiver});
+      const property=await propertyModel.findById(chat.propertyId);
+      firebaseChat.push({ lastMessage,property:property,sender:sender,receiver:receiver});
 
     }
 

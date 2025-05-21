@@ -1,6 +1,7 @@
 
 import bookingModel from "../../../DB/model/booking.model.js";
 import propertyModel from "../../../DB/model/property.model.js";
+import userModel from "../../../DB/model/user.model.js";
 
 export const addBooking = async (req, res) => {
 
@@ -8,8 +9,8 @@ export const addBooking = async (req, res) => {
         const tenantId = req.id
         // contenanIDsole.log(tenantId)
         const { propertyId } = req.params
-        const { startDate, endDate, paymentMethod } = req.body;
-        if (!startDate || !endDate || !paymentMethod ) {
+        const { startDate, endDate } = req.body;
+        if (!startDate || !endDate  ) {
             return res.status(400).json({ message: "Please provide all required fields" });
         }
         const property = await propertyModel.findById(propertyId)
@@ -37,7 +38,6 @@ export const addBooking = async (req, res) => {
             propertyId,
             tenantId,
             startDate: start,
-            paymentMethod,
             endDate: end
         })
 
@@ -62,7 +62,7 @@ export const updateBooking = async (req, res) => {
     try {
         const { bookingId } = req.params
         const tenantId=req.id
-        const { startDate, endDate, paymentMethod} = req.body;
+        const { startDate, endDate} = req.body;
         const bookingID = await bookingModel.findById(bookingId);
         if (!bookingID) {
             return res.status(400).json({ message: "booking id not found" });
@@ -95,9 +95,7 @@ export const updateBooking = async (req, res) => {
         if (endDate) {
             bookingID.endDate = end
         }
-        if (paymentMethod) {
-            bookingID.paymentMethod = paymentMethod
-        }
+
         await bookingID.save()
         return res.status(400).json({ message: "success" });
         
@@ -161,7 +159,13 @@ export const getAllBookingsForOwner = async (req, res) => {
         const propertyIds = properties.map(p => p._id);
 
         // جيب الحجوزات اللي لها علاقة بالعقارات تبعتك
-        const bookings = await bookingModel.find({ propertyId: { $in: propertyIds } });
+        const bookings = await bookingModel.find({ propertyId: { $in: propertyIds } }).populate(({
+      path: 'propertyId',
+      populate: {
+        path: 'ownerId',
+        model: 'User'
+      }//ta
+    })).populate('tenantId');
 
         res.json({ bookings });
 
@@ -183,7 +187,8 @@ export const getTenantBookingDetails = async (req, res) => {
     if (!booking) {
       return res.status(404).json({ message: "Booking not found or not yours" });
     }
-
+    
+        
     return res.status(200).json({ booking });
   } catch (error) {
     return res.status(500).json({ message: "Server error", error: error.message });
@@ -196,10 +201,18 @@ export const getTenantBookingDetails = async (req, res) => {
 export const tenantBookings =async (req,res)=> {
     try{
         const tenantId = req.id
-        const bookings=await bookingModel.find({tenantId});
+        const bookings=await bookingModel.find({tenantId}).populate(({
+      path: 'propertyId',
+      populate: {
+        path: 'ownerId',
+        model: 'User'
+      }
+    }));
         return res.status(200).json({
             message: "Tenant bookings fetched successfully",
-            bookings
+            bookings,
+            // owner info 
+            
         });
 
 

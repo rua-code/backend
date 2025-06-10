@@ -5,7 +5,7 @@ import cloudinary from "../../servies/cloudinary.js"
 export const addproprety = async (req, res) => {
     const fileimage = req.files
     try {
-        const { lng, lat, price, address, propertyType, area, numberRoom, title ,note} = req.body;
+        const { lng, lat, price, address, propertyType, area, numberRoom, title ,note,description} = req.body;
         if (!fileimage || fileimage == null) {
             return res.status(400).json({ message: "image is reqeird" });
         }
@@ -33,6 +33,7 @@ export const addproprety = async (req, res) => {
             publicId: publicId,
             ownerId: req.id,
             title,
+            description,
             note
         })
 
@@ -42,50 +43,12 @@ export const addproprety = async (req, res) => {
         return res.status(500).json({ message: `Server error: ${error.message}` });
     }
 }
-export const updatePropertyByBelal=
-    async(req,res)=>{
-         const { propertyId } = req.params;
-         const { title, price } = req.body;
 
-  if (title) property.title = title.tostring();
-  if (price) property.price = price.tostring();
-    
-//     if (property.ownerId != req.id) {
-//     return res.status(403).json({ message: "Not allowed owner" });
-//   }
- try {
-     const property= await propertyModel.findByIdAndUpdate(propertyId, {title:title,price:price});
-if (!property) {
-        return res.status(400).json({ message: "not allowed" })
-    }
-       await property.save();
-
-  return res.status(200).json({ message: "Property updated successfully",property });
-
-
-}catch (error) {
-        return res.status(500).json({ message: `Server error: ${error.message}` });
-    }
-//    if (req.files) {
-    // const images = [];
-    // const publicId = [];
-
-//     for (const file of req.files) {
-//       const { public_id, secure_url } = await cloudinary.uploader.upload(file.path, {
-//         folder: `Rent/property/${req.id}`,
-//       });
-//       images.push(secure_url);
-//       publicId.push(public_id);
-//     }
-
-//     property.image = images;
-//     property.publicId = publicId;
-//   }
-    }
 
 export const updateProperty = async (req, res) => {
+    console.log('hii')
   const { propertyId } = req.params;
-
+console.log(propertyId)
   const property = await propertyModel.findById(propertyId);
   if (!property) {
     return res.status(404).json({ message: "Property not found" });
@@ -97,14 +60,14 @@ export const updateProperty = async (req, res) => {
     
   }
 
-  const { title, price } = req.body;
-
+  const { title, price ,description} = req.body;
+    if(description) property.description = description.tostring();
   if (title) property.title = title;
   if (price) property.price = price;
 
   if (req.files) {
     const images = [];
-    const publicId = [];
+    const publicId=[];
 
     for (const file of req.files) {
       const { public_id, secure_url } = await cloudinary.uploader.upload(file.path, {
@@ -119,14 +82,16 @@ export const updateProperty = async (req, res) => {
   }
 
   await property.save();
-  return res.status(200).json({ message: "Property updated successfully" });
+  return res.status(200).json({ message: "success" });
 };
-
+export const update=async(req,res)=>{
+    console.log(req.params.id)
+}
 
 export const deleteProperty = async (req, res) => {
     const { propertyId } = req.params;
     const property = await propertyModel.findById(propertyId);
-    if (property.ownerId != req.id) {
+    if (property.ownerId.toString() != req.id) {
         return res.status(400).json({ message: "not allowed" })
     }
     const deletedProperty = await propertyModel.findByIdAndDelete(propertyId);
@@ -194,10 +159,10 @@ return res.json({message:"success",property})
 
 
 export const getapprovedtProperty =async(req,res)=>{
-    const property= await propertyModel.find({status:"approved"});
+    const property= await propertyModel.find({status:"approved"})
 if(!property){
     return res.status(400).json({message:"invalid property id"})
-}
+}//
 return res.json({message:"success",property})
 }
 

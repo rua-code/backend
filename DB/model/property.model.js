@@ -12,16 +12,17 @@ const propertySchema= new Schema({
             required: true
         }
     },
-    publicId:   [{ type: String }],
+    publicId:   [{ type: String }],// cloudinary
     ownerId: { type:mongoose.Schema.Types.ObjectId ,ref:"User",  required: true },
     image: [{ type: String}],
     price: { type: Number, required: true },
     address: { type: String, required: true },
-    propertyType: { type: String,enum :['apartment', 'studio', 'student dorm', 'vaills'] ,required: true },
+    propertyType: { type: String,enum :['apartment', 'studio', 'student_Dorm', 'vaills'] ,required: true },
     area: { type: Number, required: true },
     numberRoom: { type: Number, required: true },
     title: { type: String, required: true },
     status : {type:String,enum:["pending", "approved","canceld"],default: "pending"},
+    description: { type: String, default: "" },
     note :{
         type:String,
         default :"سيتم مراجعة الطلب "
@@ -33,10 +34,9 @@ const propertySchema= new Schema({
         "3": { type: Number, default: 0 },
        "4": { type: Number, default: 0 },
        "5": { type: Number, default: 0 }
-      }
+      },
+        // bookingId: { type: mongoose.Schema.Types.ObjectId,ref:"Booking", required: true },
       
-      
-
 });
 propertySchema.index({location:'2dsphere'});
 const propertyModel= model('Property',propertySchema);

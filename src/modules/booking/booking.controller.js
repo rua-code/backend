@@ -131,7 +131,7 @@ export const updateBookingStatus = async (req, res) => {
         }
 
         // تحقق من أن الحالة المرسلة صالحة
-        const validStatuses = ["pending", "approved", "completed"];
+        const validStatuses = ["pending", "approved", "canceld"];
         if (!validStatuses.includes(status)) {
             return res.status(400).json({ message: "Invalid booking status" });
         }
@@ -141,7 +141,7 @@ export const updateBookingStatus = async (req, res) => {
         booking.note=note;
         await booking.save();
 
-        return res.status(200).json({ message: "Booking status updated successfully", booking });
+        return res.status(200).json({ message: "success", booking });
     } catch (error) {
         return res.status(500).json({ message: `Server error: ${error.message}` });
     }
@@ -222,3 +222,41 @@ export const tenantBookings =async (req,res)=> {
 
     }
 }
+
+export const getAllBookings = async (req, res) => {
+  try {
+    const user = req.id;
+    const bookings = await bookingModel.find()
+      .populate('tenantId', 'firstName email') 
+      .populate('propertyId', 'title address');
+
+    return res.json({ message: "All bookings", bookings });
+  } catch (err) {
+    return res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+export const getCompletedBookings = async (req, res) => {
+  try {
+    const { propertyId } = req.params; 
+    const userId = req.id; 
+
+    if (!propertyId) {
+      return res.status(400).json({ message: "propertyId is required " });
+    }
+
+    const bookings = await bookingModel.find({
+      tenantId: userId,
+      propertyId: propertyId,
+  status: { $in: ["approved", "completed"] },
+    }).populate("propertyId");
+
+    if (bookings.length === 0) {
+      return res.status(404).json({ message: "No completed bookings found" });
+    }
+
+    return res.json({ message: "success", bookings });
+  } catch (err) {
+    return res.status(500).json({ message: "Server error", error: err.message });
+  }
+};

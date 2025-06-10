@@ -1,33 +1,41 @@
+import userRoleModel from "../../../DB/model/request.role.js";
 import userModel from "../../../DB/model/user.model.js";
 
 export const getUser = async (req, res) => {
-   try {
-    const user= await userModel.find({});
-    console.log(req.id);
-   return res.json({message:"success",user});
-   } catch (error) {
-    return res.json ({message:`${error} erorr in function`})
-   }
+  try {
+    const user = await userModel.find({});
+    return res.json({ message: "success", user });
+  } catch (error) {
+    return res.json({ message: `${error} erorr in function` })
+  }
 };
 
 //فنكشن يعدل على المعلومات 
 
 export const updateUser = async (req, res) => {
-    const { userId } = req.params; 
-    const { firstName, lastName, email ,role} = req.body; 
+  try {
+    const { reqId } = req.params;
+    const { role, status } = req.body;
 
-    const user = await userModel.findById(userId);
-    if (!user) return res.status(404).json({ message: "المستخدم غير موجود" });
-    if(role) user.role=role;
-    if (firstName) user.firstName = firstName;
-    if (lastName) user.lastName = lastName;
-    if (email) user.email = email;
-//role 
-    await user.save();
+    const userRole = await userRoleModel.findOne({ userId: reqId });
+    if (!userRole) return res.status(404).json({ message: "User role not found" });
 
-    res.status(200).json({ message: "تم تحديث البيانات بنجاح", user });
+    if (status && role) {
+      if (status === "approved") {
+        const updatedUser = await userModel.findByIdAndUpdate(reqId, { role }, { new: true });
+        if (!updatedUser) return res.status(404).json({ message: "User not found" });
+      }
+
+      await userRoleModel.findOneAndDelete({ userId: reqId });
+      return res.status(200).json({ message: "success" });
+    }
+
+    return res.status(400).json({ message: "Missing role or status" });
+  } catch (error) {
+    console.error("Error in updateUser:", error);
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
+  }
 };
-
 
 export const getUserById = async (req, res) => {
   try {
@@ -43,5 +51,31 @@ export const getUserById = async (req, res) => {
     return res.status(200).json({ user });
   } catch (error) {
     return res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+
+export const addRenter = async (req, res) => {
+  try {
+    const id = req.id;
+    const user = await userRoleModel.findOne({ userId: id });
+    if (!user) {
+      const User = await userRoleModel.create({ userId: id, role: "tenant" });
+      return res.status(200).json({ message: "success" });
+    }
+    return res.status(400).json({ message: "you have already requested" });
+
+  } catch (error) {
+    return res.status(500).json({ message: "Server error", error: error.message });
+  }
+}
+
+
+export const getUserRequest = async (req, res) => {
+  try {
+    const user = await userRoleModel.find({ status: "pending" }).populate("userId");
+    return res.json({ message: "success", user });
+  } catch (error) {
+    return res.json({ message: `${error} erorr in function` })
   }
 };

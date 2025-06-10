@@ -52,16 +52,18 @@ export const addRating = async(req,res)=>{
 
 export const updateRating = async (req, res) => {
   try {
-    const tenantId = req.id; // جاي من التوكن
+    const tenantId = req.id; // From token
     const { propertyId } = req.params;
-    const { rating } = req.body;
+    var  { rating } = req.body;
+    // Check if rating is valid
+    rating = parseInt(rating);
+        console.log(rating);
 
-    // تحقق من صحة التقييم
     if (!rating || rating < 1 || rating > 5) {
       return res.status(400).json({ message: "Rating must be between 1 - 5" });
     }
 
-    // تحقق هل المستأجر فعلاً حجز هذا العقار وحالة الحجز مقبولة أو مكتملة
+    // Check if the tenant has an approved or completed booking for this property
     const validBooking = await bookingModel.findOne({
       propertyId,
       tenantId,
@@ -72,16 +74,6 @@ export const updateRating = async (req, res) => {
       return res.status(403).json({ message: "You can only rate properties you have booked and completed/approved" });
     }
 
-    // تحقق من وجود تقييم سابق
-    const existingRating = await ratingModel.findOne({ propertyId, tenantId });
-    if (!existingRating) {
-      return res.status(404).json({ message: "You have not rated this property yet" });
-    }
-
-    const oldRating = existingRating.rating;
-    existingRating.rating = rating;
-    await existingRating.save();
-
     const property = await propertyModel.findById(propertyId);
     if (!property) {
       return res.status(404).json({ message: "Property not found" });
@@ -89,29 +81,41 @@ export const updateRating = async (req, res) => {
 
     if (!property.ratingCounts) property.ratingCounts = {};
 
-    // خصم واحد من التقييم القديم
-    if (property.ratingCounts[oldRating]) {
-      property.ratingCounts[oldRating] -= 1;
-      if (property.ratingCounts[oldRating] < 0) {
-        property.ratingCounts[oldRating] = 0;
-      }
-    }
+    // Check if a rating already exists for this tenant and property
+    let existingRating = await ratingModel.findOne({ propertyId, tenantId });
 
-    // زيادة واحد للتقييم الجديد
-    if (!property.ratingCounts[rating]) {
-      property.ratingCounts[rating] = 1;
+    if (!existingRating) {
+      // Create new rating
+      await ratingModel.create({ propertyId, tenantId, rating });
+
+      // Increase count for new rating
+      property.ratingCounts[rating] = (property.ratingCounts[rating] || 0) + 1;
     } else {
-      property.ratingCounts[rating] += 1;
+      // Update existing rating
+      const oldRating = existingRating.rating;
+      existingRating.rating = rating;
+      await existingRating.save();
+
+      // Adjust old and new rating counts
+      if (property.ratingCounts[oldRating]) {
+        property.ratingCounts[oldRating] -= 1;
+        if (property.ratingCounts[oldRating] < 0) {
+          property.ratingCounts[oldRating] = 0;
+        }
+      }
+
+      property.ratingCounts[rating] = (property.ratingCounts[rating] || 0) + 1;
     }
 
     await property.save();
 
-    return res.status(200).json({ message: "Rating updated successfully" });
+    return res.status(200).json({ message: "Rating processed successfully" });
 
   } catch (error) {
     return res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
 
 export const getTenantRatings = async (req, res) => {
     try {

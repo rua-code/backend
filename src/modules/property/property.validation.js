@@ -43,6 +43,10 @@ export const addPropertySchema = Joi.object({
     note:Joi.string().min(3).max(100).optional().messages({
         "string.min": "Title must be at least 3 characters",
         "string.max": "Title must be less than 50 characters"
+    }),
+    description:Joi.string().min(3).max(100).optional().messages({
+        "string.min": "Title must be at least 3 characters",
+        "string.max": "Title must be less than 50 characters"
     })
 });
 
@@ -55,6 +59,10 @@ export const updatePropertySchema = Joi.object({
     price: Joi.number().positive().optional().messages({
         "number.base": "Price must be a number",
         "number.positive": "Price must be a positive number"
+    }),
+       description:Joi.string().min(3).max(100).optional().messages({
+        "string.min": "Title must be at least 3 characters",
+        "string.max": "Title must be less than 50 characters"
     })
 });
 

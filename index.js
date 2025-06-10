@@ -10,9 +10,11 @@ import messageRouter from "./src/modules/message/message.router.js"
 import "./src/servies/cron.js"
 
 
+
 const app = express()
 connectDb();
  app.use(cors())
+ 
  app.use(express.json())
  app.use('/api/v1/auth',authRouter)
   app.use('/api/v1/user',userRouter)

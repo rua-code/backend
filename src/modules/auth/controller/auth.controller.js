@@ -1,7 +1,7 @@
 // import {userModel} from "../../../../DB/model/user.model.js";
 import { nanoid, customAlphabet } from 'nanoid'
 import userModel from "../../../../DB/model/user.model.js";
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { sendEmail } from "../../../servies/sendEmail.js";
 import MailMessage from "nodemailer/lib/mailer/mail-message.js";

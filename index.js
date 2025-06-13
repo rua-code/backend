@@ -23,7 +23,7 @@ connectDb();
   app.use('/api/v1/rating',ratingRouter)
   app.use('/api/v1/message',messageRouter)
 app.get('*', (req, res)=> { 
-  res.json({massage:'erorr page not find'})
+  res.json({massage:'erorr page not found'})
 
 })
 

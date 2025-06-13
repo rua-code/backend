@@ -13,11 +13,7 @@ export const sendMessage = async (req, res) => {
       return res.status(400).json({ message: "Missing data" });
     }
 
-    // 1. Check if chat exists
-    // const propertyID =propertyId.toString();
-    // const senderID= senderId.toString();
-    // const receiverID= receiverId.toString();
-    // console.log(propertyID)
+ 
     let chat = await chatModel.findOne({
       participants: { $all: [senderId, receiverId] },
       propertyId,
@@ -37,7 +33,7 @@ export const sendMessage = async (req, res) => {
       await chat.save();
     
 
-    const chatId = chat._id.toString(); //toString() يحوّله من ObjectId إلى نص (String) because fire base dose not support objectid
+    const chatId = chat._id.toString(); //toString()  من ObjectId إلى نص (String) because fire base dose not support objectid
 
     // 4. Push message to Firebase
     const messageRef = db.ref(`chat/${chatId}/messages`).push();
@@ -55,7 +51,7 @@ export const sendMessage = async (req, res) => {
       senderId,
       chatId,
       receiverId
-    });//db ref ,, message ref ??
+    });
 
     return res.status(200).json({ message: "Message sent", chatId });
 
@@ -79,9 +75,10 @@ export const getUserChat = async (req, res) => {
 
     for (const chat of chats) {// chat id from mongodb 
       const chatID = chat._id
-      const pathofReading = db.ref(`chat/${chatID}/lastMessage`)//من وين اقرء 
+      const pathofReading = db.ref(`chat/${chatID}/lastMessage`)
       const read = await pathofReading.once("value")//reading from fire base
       lastMessage = read.val();
+      if (!lastMessage) continue; 
       const sender=await userModel.findById(lastMessage.senderId).select("-password -confirmEmail -sendcode");
       const receiver=await userModel.findById(lastMessage.receiverId).select("-password -confirmEmail -sendcode");
       const property=await propertyModel.findById(chat.propertyId);
@@ -90,7 +87,7 @@ export const getUserChat = async (req, res) => {
     }
 
 
-    // رجّعهم كـ JSON
+ 
     return res.status(200).json({ firebaseChat });
 
   } catch (error) {

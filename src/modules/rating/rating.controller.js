@@ -7,8 +7,7 @@ export const addRating = async(req,res)=>{
         const tenantId=req.id;
         const { propertyId } = req.params;
         const { rating } = req.body; 
-        //declration 
-        //validation 
+        
         if(!rating || rating<0 || rating >5 ){
             return res.status(400).json({message: " rating must be between 1 - 5"})
         }
@@ -29,7 +28,7 @@ export const addRating = async(req,res)=>{
             return res.status(400).json({ message: "You have already rated this property" });
            }
            //now saving
-           await ratingModel.create({tenantId,propertyId,rating})//نشئ تقييمًا جديدًا (rating) في قاعدة البيانات
+           await ratingModel.create({tenantId,propertyId,rating})
 
               const property = await propertyModel.findById(propertyId);
                 if (!property) {
@@ -85,18 +84,18 @@ export const updateRating = async (req, res) => {
     let existingRating = await ratingModel.findOne({ propertyId, tenantId });
 
     if (!existingRating) {
-      // Create new rating
+
       await ratingModel.create({ propertyId, tenantId, rating });
 
-      // Increase count for new rating
+  
       property.ratingCounts[rating] = (property.ratingCounts[rating] || 0) + 1;
     } else {
-      // Update existing rating
+   
       const oldRating = existingRating.rating;
       existingRating.rating = rating;
       await existingRating.save();
 
-      // Adjust old and new rating counts
+    
       if (property.ratingCounts[oldRating]) {
         property.ratingCounts[oldRating] -= 1;
         if (property.ratingCounts[oldRating] < 0) {

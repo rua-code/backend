@@ -8,7 +8,7 @@ import MailMessage from "nodemailer/lib/mailer/mail-message.js";
 import { assign } from "nodemailer/lib/shared/index.js";
 export const SignUp = async (req, res) => {
   try {
-    //نستقبل الداتا الي جاي من افرونت 
+  
     const { email, password, firstName, lastName, confirmPassword } = req.body; 
   
     // نتاكد اذا مسجل بنفس الايميل مسبقا
@@ -47,7 +47,7 @@ export const SignUp = async (req, res) => {
     // sendEmail
     await sendEmail(email,"rent",message)
      
-    /// بنرجع للفرونت اند res.json()
+
     res.json({ message: "success"})
     console.log("signed up",token);
   } catch (error) {
@@ -113,7 +113,7 @@ export const SignUp = async (req, res) => {
        user.sendcode=null;
        user.save();
        return res.status(200).json({message:"success"});
-// ليش بكل فنكشن برجعها
+
      }
 export const checkCode=async(req,res)=>{
 
@@ -124,7 +124,7 @@ export const checkCode=async(req,res)=>{
  
        }
    if (user.sendcode != code){
-        return res.status(404).json({message:"not valid code"});//تعبر عن حالة النتيجة
+        return res.status(404).json({message:"not valid code"});
 
        }
        return res.status(200).json({message:"success"});

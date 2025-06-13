@@ -16,6 +16,3 @@ router.get("/getallProperty",auth(["admin"]),getallProperty)
 router.get("/getapprovedproperty",getapprovedtProperty)
 router.get("/getpropertybyid/:ownerId",auth(["renter","admin"]),getPropertybyid)
 export default router
-//بدي ارجع من قاعدى البياتاات get
-//post تخزين بقاعدة البيانات
-// patch تعديل على البيانات

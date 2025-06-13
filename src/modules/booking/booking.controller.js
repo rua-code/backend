@@ -7,7 +7,7 @@ export const addBooking = async (req, res) => {
 
     try {
         const tenantId = req.id
-        // contenanIDsole.log(tenantId)
+        
         const { propertyId } = req.params
         const { startDate, endDate } = req.body;
         if (!startDate || !endDate  ) {
@@ -41,16 +41,7 @@ export const addBooking = async (req, res) => {
             endDate: end
         })
 
-        // const newBooking = new bookingModel({
-        //     propertyId,
-        //     tenantId,
-        //     startDate:start,
-        //     endDate:end,
-        //     paymentMethod,
-        //     price,
-        // });
-
-        // await newBooking.save();
+       
         return res.status(201).json({ message: "Booking created successfully", booking: newbooking });
     }
     catch (error) {
@@ -103,9 +94,6 @@ export const updateBooking = async (req, res) => {
         return res.status(500).json({ message: `Server error: ${error.message}` });
     }
 }
-// المفروض كمان نعمل لطلب الاستئجار
-
-//تعديل حالة حجز من قبل صاحب العقار س status
 
 export const updateBookingStatus = async (req, res) => {
     try {
@@ -119,7 +107,7 @@ export const updateBookingStatus = async (req, res) => {
             return res.status(404).json({ message: "Booking not found" });
         }
 
-        // جلب العقار المرتبط بالحجز
+     
         const property = await propertyModel.findById(booking.propertyId);
         if (!property) {
             return res.status(404).json({ message: "Property not found" });
@@ -175,7 +163,6 @@ export const getAllBookingsForOwner = async (req, res) => {
 };
 
 
- // ومعلومات العقار معلومات حجز معين booking id=params ,tenent from token ,.populate
 
 export const getTenantBookingDetails = async (req, res) => {
   try {
@@ -196,7 +183,7 @@ export const getTenantBookingDetails = async (req, res) => {
 };
 
 
-//فنكشن يرجع لمستأجر معين البوكينج
+
 
 export const tenantBookings =async (req,res)=> {
     try{
@@ -211,7 +198,7 @@ export const tenantBookings =async (req,res)=> {
         return res.status(200).json({
             message: "Tenant bookings fetched successfully",
             bookings,
-            // owner info 
+       
             
         });
 

@@ -11,7 +11,9 @@ export const signUpValidation =
         lastName: Joi.string().min(3).max(30).required(),
         email: Joi.string().email().required(),
         password: Joi.string().min(6).required(),
-        confirmPassword: Joi.string().valid(Joi.ref('password')).required()
+        confirmPassword: Joi.string().valid(Joi.ref('password')).required(),
+        idNo: Joi.string().min(11).required(),
+        birthDate: Joi.string().required()
     })
 
 export const loginValidation  = Joi.object({
@@ -33,3 +35,5 @@ export const loginValidation  = Joi.object({
                 password: Joi.string().min(6).required(),
                 confirmPassword: Joi.string().valid(Joi.ref('password')).required()
             });
+
+         

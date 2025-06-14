@@ -9,7 +9,7 @@ import { assign } from "nodemailer/lib/shared/index.js";
 export const SignUp = async (req, res) => {
   try {
   
-    const { email, password, firstName, lastName, confirmPassword } = req.body; 
+    const { email, password, firstName, lastName, confirmPassword, idNo, birthDate } = req.body; 
   
     // نتاكد اذا مسجل بنفس الايميل مسبقا
     // بنبحث في db عن ايميل نفس الايميل الي بعتته الفرونت
@@ -32,6 +32,8 @@ export const SignUp = async (req, res) => {
       email,
       firstName,
       lastName,
+      idNo,
+      birthDate,
       password:hashpassword
     })
   
@@ -74,7 +76,6 @@ export const SignUp = async (req, res) => {
       }
       if(!user){
         return res.status(404).json({message:"user not Found"});
-
       }
         const match = bcrypt.compareSync(password,user.password);
         if(!match){

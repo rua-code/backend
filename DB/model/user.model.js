@@ -9,6 +9,9 @@ const userSchema=new Schema({
     confirmEmail: { type: Boolean, default: false },
     sendcode:{type:String,default:null},
     role:{type: String,enum:["renter","admin","tenant"] ,default:"tenant"},
+    idNo:{type: String,required: true},
+    birthDate:{type: String,required: true},
+   
 });
 
 //user=> collection name in mongo 

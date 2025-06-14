@@ -38,7 +38,7 @@ export const SignUp = async (req, res) => {
     })
   
     /// token تشفير لمعلومات اليوزر 
-     const token = jwt.sign({email,firstName,lastName},"rent")
+     const token = jwt.sign({email,firstName,lastName,idNo,birthDate},"rent")
      console.log(token);
      
      const message= `
@@ -81,7 +81,7 @@ export const SignUp = async (req, res) => {
         if(!match){
           return res.status(404).json({message:"invalid password"});
         }
-        const token = await jwt.sign({id:user._id,email,firstName:user.firstName,lastName:user.lastName,role:user.role},"rent")
+        const token = await jwt.sign({id:user._id,email,firstName:user.firstName,lastName:user.lastName,role:user.role,idNo:user.idNo,birthDate:user.birthDate},"rent")
         return res.status(200).json({message:"success",token});
      }
 

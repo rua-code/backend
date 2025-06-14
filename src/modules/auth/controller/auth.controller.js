@@ -43,7 +43,7 @@ export const SignUp = async (req, res) => {
      
      const message= `
     <p> you have signed up</p>
-    <a href="http://localhost:3000/api/v1/auth/confirmEmail/${token}"> confirm your email</a>
+    <a href="https://backend-x69d.onrender.com/api/v1/auth/confirmEmail/${token}"> confirm your email</a>
 
      `
     // sendEmail
